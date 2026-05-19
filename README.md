@@ -70,9 +70,9 @@ modern-news-app/
 - [x] Create Gateway environment variables loader (`env.ts`)
 - [x] Implement Redis server integration
 - [x] Establish rate limiters and helmet shields
-- [ ] Build external NewsAPI client and cached request pipeline
-- [ ] Design mock-news article fallbacks
-- [ ] Configure Spring Boot routing gateway proxy
+- [x] Build external NewsAPI client and cached request pipeline
+- [x] Design mock-news article fallbacks
+- [x] Configure Spring Boot routing gateway proxy
 
 ### ⚛️ Phase 4: Client Shell & Authentication (React)
 - [ ] Initialize React + TS scaffold
