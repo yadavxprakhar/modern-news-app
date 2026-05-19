@@ -85,5 +85,5 @@ modern-news-app/
 - [ ] Build breaking category tag filters
 - [ ] Create search-bar indices
 - [ ] Create articles grid layout and card animations
-- [ ] Establish bookmark syncing logic
+- [x] Establish bookmark syncing logic
 - [x] Final end-to-end integration and run validation
