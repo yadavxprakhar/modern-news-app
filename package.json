@@ -1,0 +1,17 @@
+{
+  "name": "modern-news-app-root",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Root configuration to concurrently orchestrate Spring Boot, Node.js API Gateway, and React Vite Front-End",
+  "scripts": {
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down",
+    "backend:spring": "cd backend-spring && ./mvnw spring-boot:run",
+    "backend:node": "cd backend-node && npm run dev",
+    "frontend": "cd frontend && npm run dev",
+    "dev:all": "concurrently --kill-others-on-fail -n \"SPRING,NODE_GATEWAY,VITE_UI\" -c \"green,blue,magenta\" \"npm run backend:spring\" \"npm run backend:node\" \"npm run frontend\""
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
