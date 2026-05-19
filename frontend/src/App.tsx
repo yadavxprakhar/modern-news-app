@@ -8,6 +8,7 @@ import { ArticleCard } from './components/ArticleCard';
 import { PreferencesDrawer } from './components/PreferencesDrawer';
 import { useNews } from './hooks/useNews';
 import { useBookmarks } from './hooks/useBookmarks';
+import { DevModeToggle } from './components/DevModeToggle';
 
 const MainAppContent: React.FC = () => {
     const { user, loading: authLoading, logout, toggleTheme, preferences } = useAuth();
@@ -200,6 +201,7 @@ const App: React.FC = () => {
     return (
         <AuthProvider>
             <MainAppContent />
+            <DevModeToggle />
         </AuthProvider>
     );
 };
