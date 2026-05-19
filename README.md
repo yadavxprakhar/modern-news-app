@@ -52,7 +52,7 @@ modern-news-app/
 - [x] Create root `.gitignore` rules
 - [x] Configure PostgreSQL and Redis in `docker-compose.yml`
 - [x] Design relational database schemas in `database/init.sql`
-- [ ] Establish backend and frontend workspace folders
+- [x] Establish backend and frontend workspace folders
 - [x] Write Spring Boot microservice build dependencies (`pom.xml`)
 - [x] Write Node.js Express API Gateway configurations (`package.json`, `tsconfig.json`)
 
