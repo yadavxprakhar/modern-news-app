@@ -6,9 +6,9 @@
   "scripts": {
     "docker:up": "docker-compose up -d",
     "docker:down": "docker-compose down",
-    "backend:spring": "cd backend-spring && ./mvnw spring-boot:run",
-    "backend:node": "cd backend-node && npm run dev",
-    "frontend": "cd frontend && npm run dev",
+    "backend:spring": "cd backend-spring && mvn spring-boot:run",
+    "backend:node": "bash scripts/start-gateway.sh",
+    "frontend": "cd frontend && ( [ -d node_modules ] || npm install ) && npm run dev",
     "dev:all": "concurrently --kill-others-on-fail -n \"SPRING,NODE_GATEWAY,VITE_UI\" -c \"green,blue,magenta\" \"npm run backend:spring\" \"npm run backend:node\" \"npm run frontend\""
   },
   "devDependencies": {
