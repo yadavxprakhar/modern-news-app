@@ -12,7 +12,7 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({ onSwitchToLogin }) =
     const [password, setPassword] = useState<string>('');
     
     const [error, setError] = useState<string>('');
-    const [fieldErrors, setFieldErrors] = useState<Record<String, String>>({});
+    const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
     const [loading, setLoading] = useState<boolean>(false);
 
     const handleSubmit = async (e: React.FormEvent) => {

@@ -104,7 +104,9 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onSwitchToRegister }) => {
                     Don't have an active account?{' '}
                     <span 
                         onClick={onSwitchToRegister} 
-                        style={{ color: 'hsl(var(--primary))', fontWeight: 600, cursor: 'pointer', hover: { textDecoration: 'underline' } }}
+                        style={{ color: 'hsl(var(--primary))', fontWeight: 600, cursor: 'pointer' }}
+                        onMouseOver={(e) => e.currentTarget.style.textDecoration = 'underline'}
+                        onMouseOut={(e) => e.currentTarget.style.textDecoration = 'none'}
                     >
                         Sign Up Free
                     </span>
