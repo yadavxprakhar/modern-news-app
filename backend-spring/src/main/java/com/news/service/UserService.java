@@ -129,4 +129,33 @@ public class UserService {
                 .email(user.getEmail())
                 .build();
     }
+
+    /**
+     * Retrieves preferences for a given user.
+     */
+    @Transactional(readOnly = true)
+    public UserPreference getUserPreference(String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
+        return userPreferenceRepository.findByUser_UserId(user.getUserId())
+                .orElseThrow(() -> new IllegalArgumentException("Preferences not initialized for user"));
+    }
+
+    /**
+     * Updates preferences for a given user.
+     */
+    @Transactional
+    public UserPreference updateUserPreference(String username, UserPreference updatedPreference) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
+        UserPreference preference = userPreferenceRepository.findByUser_UserId(user.getUserId())
+                .orElseThrow(() -> new IllegalArgumentException("Preferences not initialized for user"));
+
+        preference.setFavoriteCategories(updatedPreference.getFavoriteCategories());
+        preference.setTheme(updatedPreference.getTheme());
+        preference.setNotificationsEnabled(updatedPreference.isNotificationsEnabled());
+
+        return userPreferenceRepository.save(preference);
+    }
 }
+
