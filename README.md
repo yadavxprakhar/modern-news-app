@@ -1,89 +1,156 @@
-# 📰 Production-Ready News Website Portal
+<div align="center">
 
-A robust, decoupled, and high-performance full-stack news web application. This project uses a modern microservices architecture with a React frontend, a Node.js API Gateway, and a Spring Boot user service, backed by PostgreSQL and Redis.
+<h1>⚡ e-akhbar</h1>
+<p><strong>A premium, production-ready news portal built on a modern microservices architecture.</strong></p>
+
+<p>
+  <img src="https://img.shields.io/badge/React-18-61DAFB?style=for-the-badge&logo=react&logoColor=black" />
+  <img src="https://img.shields.io/badge/TypeScript-5-3178C6?style=for-the-badge&logo=typescript&logoColor=white" />
+  <img src="https://img.shields.io/badge/Spring_Boot-3-6DB33F?style=for-the-badge&logo=springboot&logoColor=white" />
+  <img src="https://img.shields.io/badge/Node.js-Express-339933?style=for-the-badge&logo=node.js&logoColor=white" />
+  <img src="https://img.shields.io/badge/PostgreSQL-16-4169E1?style=for-the-badge&logo=postgresql&logoColor=white" />
+  <img src="https://img.shields.io/badge/Redis-7-DC382D?style=for-the-badge&logo=redis&logoColor=white" />
+</p>
+
+<p>
+  <img src="https://img.shields.io/badge/Deployed_on-Vercel-000?style=for-the-badge&logo=vercel" />
+  <img src="https://img.shields.io/badge/API_on-Render-46E3B7?style=for-the-badge&logo=render&logoColor=black" />
+</p>
+
+</div>
 
 ---
 
-## 🏗️ Decoupled System Architecture
+## 🏗️ System Architecture
 
-```text
-       ┌────────────────────────┐
-       │   Vite React Client    │ (Port 3000)
-       └───────────┬────────────┘
-                   │
-                   ▼ [REST API Proxy]
-       ┌────────────────────────┐
-       │  Node.js API Gateway   │ (Port 5000)
-       └─────┬────────────┬─────┘
-             │            │
-   [Rate Limit / Cache]   └────────────────────────┐
-             │                                     │ [Reverse Proxy Route]
-             ▼                                     ▼
-       ┌───────────┐                     ┌────────────────────────┐
-       │Redis Cache│ (Port 6379)         │Spring Boot User Service│ (Port 8082)
-       └───────────┘                     └───────────┬────────────┘
-                                                     │
-                                           [JPA Database Interface]
-                                                     │
-                                                     ▼
-                                         ┌────────────────────────┐
-                                         │  PostgreSQL Database   │ (Port 5432)
-                                         └────────────────────────┘
+A fully decoupled, multi-layer architecture with a dedicated API Gateway sitting between the React client and the backend services.
+
+```
+        ┌──────────────────────────────────────┐
+        │       React SPA (Vite + TS)          │  → Deployed on Vercel
+        └──────────────────┬───────────────────┘
+                           │  REST (Axios + JWT Interceptors)
+                           ▼
+        ┌──────────────────────────────────────┐
+        │       Node.js API Gateway            │  → Deployed on Render
+        │  • Rate Limiting  • Helmet Security  │
+        │  • NewsAPI Client • Redis Caching    │
+        └────────────┬─────────────────────────┘
+                     │                    │
+          [Cache Layer]           [Reverse Proxy]
+                     │                    │
+             ┌───────────┐    ┌───────────────────────┐
+             │   Redis   │    │  Spring Boot Service  │  → Deployed on Render
+             └───────────┘    │  • JWT Auth  • JPA    │
+                              └───────────┬───────────┘
+                                          │  JPA / Hibernate
+                                          ▼
+                              ┌───────────────────────┐
+                              │  PostgreSQL Database  │  → Neon (Cloud)
+                              └───────────────────────┘
 ```
 
 ---
 
-## 📂 Project Repository Structure
+## ✨ Features
 
-```text
-modern-news-app/
-├── frontend/             # React SPA (Vite, TypeScript, Tailwind/Vanilla CSS)
-├── backend-node/         # Express API Gateway (Redis integration, Rate limiting)
-├── backend-spring/       # Spring Boot User service (Security, PostgreSQL JPA)
-├── database/             # PostgreSQL database schemas and initialization scripts
-└── docker-compose.yml    # Database containers orchestration profile
+| Feature | Description |
+|---|---|
+| 🔐 **JWT Authentication** | Stateless auth with auto-refresh token interceptors |
+| 📰 **Live News Feed** | Real-time articles from NewsAPI with Redis caching |
+| 🔖 **Bookmarks** | Persist and sync saved articles across sessions |
+| 🎨 **Dark Mode** | System-aware theme toggle with smooth transitions |
+| 🏷️ **Category Filters** | Filter news by topic (Tech, Sports, Business, etc.) |
+| 🔍 **Search** | Live search across article titles and descriptions |
+| 📱 **Responsive Design** | Fully adaptive layout from mobile to 4K |
+| ⚡ **Performance** | Image preloading, Redis caching, and Vite bundling |
+
+---
+
+## 📂 Repository Structure
+
+```
+e-akhbar/
+├── frontend/              # React 18 + TypeScript SPA (Vite)
+│   ├── src/
+│   │   ├── api/           # Axios clients with JWT interceptors
+│   │   ├── components/    # ArticleCard, SearchBar, CategoryFilter, etc.
+│   │   ├── hooks/         # useNews, useBookmarks custom hooks
+│   │   ├── pages/         # LoginPage, RegisterPage, CompanyPages
+│   │   ├── store/         # Auth context & global state
+│   │   ├── types/         # TypeScript interfaces
+│   │   └── utils/         # Helper functions
+│   └── vercel.json        # Vercel SPA rewrite + API proxy rules
+│
+├── backend-node/          # Express API Gateway
+│   ├── Rate limiting & Helmet security headers
+│   ├── NewsAPI integration with Redis caching
+│   └── Reverse proxy to Spring Boot service
+│
+├── backend-spring/        # Spring Boot User Microservice
+│   ├── JWT token provider & security filters
+│   ├── JPA User & Preferences models
+│   └── REST auth controllers (login, register, profile)
+│
+├── database/              # PostgreSQL schemas & init scripts
+└── docker-compose.yml     # Local dev orchestration (Postgres + Redis)
 ```
 
 ---
 
-## 🚦 Project Implementation Progress
+## 🚀 Running Locally
 
-### 🏗️ Phase 1: Environment Setup & Architecture
-- [x] Create root `.gitignore` rules
-- [x] Configure PostgreSQL and Redis in `docker-compose.yml`
-- [x] Design relational database schemas in `database/init.sql`
-- [x] Establish backend and frontend workspace folders
-- [x] Write Spring Boot microservice build dependencies (`pom.xml`)
-- [x] Write Node.js Express API Gateway configurations (`package.json`, `tsconfig.json`)
+### Prerequisites
+- Node.js 18+, Java 17+, Docker
 
-### 🔑 Phase 2: Core User & Database Setup (Spring Boot)
-- [x] Configure database connection (`application.properties`)
-- [x] Write JPA User model (`User.java`)
-- [x] Write JPA Preference model (`UserPreference.java`)
-- [x] Establish JPA database repositories (`UserRepository`, `UserPreferenceRepository`)
-- [x] Implement stateless JWT token provider (`JwtTokenProvider.java`)
-- [x] Build Spring Boot security UserDetails loader (`CustomUserDetailsService.java`)
-- [x] Build Spring Boot JWT authentication filters & context config
-- [x] Implement signup, login, and profile controllers
+### 1. Start Databases
+```bash
+docker-compose up -d
+```
 
-### ⚡ Phase 3: Gateway Setup & External Feeds (Node.js)
-- [x] Create Gateway environment variables loader (`env.ts`)
-- [x] Implement Redis server integration
-- [x] Establish rate limiters and helmet shields
-- [x] Build external NewsAPI client and cached request pipeline
-- [x] Design mock-news article fallbacks
-- [x] Configure Spring Boot routing gateway proxy
+### 2. Start Spring Boot Service
+```bash
+cd backend-spring
+./mvnw spring-boot:run
+```
 
-### ⚛️ Phase 4: Client Shell & Authentication (React)
-- [x] Initialize React + TS scaffold
-- [x] Map Outfit & typography styles
-- [x] Configure Axios clients with JWT auto-refresh interceptors
-- [ ] Build global state store (`authStore.ts`)
-- [x] Create login and registration visual pages
+### 3. Start Node.js Gateway
+```bash
+cd backend-node
+npm install && npm run dev
+```
 
-### 📰 Phase 5: Dashboard, Bookmarks & Final Polish
-- [ ] Build breaking category tag filters
-- [ ] Create search-bar indices
-- [ ] Create articles grid layout and card animations
-- [x] Establish bookmark syncing logic
-- [x] Final end-to-end integration and run validation
+### 4. Start React Frontend
+```bash
+cd frontend
+npm install && npm run dev
+```
+
+App will be available at **http://localhost:3000**
+
+---
+
+## 🌐 Deployment
+
+| Service | Platform | URL |
+|---|---|---|
+| Frontend | Vercel | Auto-deploys on push to `main` |
+| API Gateway | Render | `news-backend-node-36tn.onrender.com` |
+| User Service | Render | Spring Boot container |
+| Database | Neon | Managed PostgreSQL |
+
+---
+
+## 🛠️ Tech Stack
+
+**Frontend:** React 18, TypeScript, Vite, Vanilla CSS, Lucide Icons  
+**Gateway:** Node.js, Express, Redis, Axios, Helmet, express-rate-limit  
+**Backend:** Spring Boot 3, Spring Security, JWT, JPA / Hibernate  
+**Database:** PostgreSQL 16, Redis 7  
+**DevOps:** Docker Compose, Vercel, Render, Neon
+
+---
+
+<div align="center">
+  <p>Built with ❤️ by <strong>Prakhar</strong></p>
+</div>
