@@ -134,26 +134,28 @@ const MainAppContent: React.FC = () => {
             </header>
 
             {/* Main Content Dashboard */}
-            <main style={{ flex: 1, width: '100%', maxWidth: '1200px', margin: '0 auto', padding: '40px 24px' }}>
+            <main style={{ flex: 1, width: '100%', maxWidth: (activeView === 'login' || activeView === 'register') ? '100%' : '1200px', margin: '0 auto', padding: '40px 24px' }}>
                 
                 {/* Visual Section Greeting Banner */}
-                <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '32px', flexWrap: 'wrap', gap: '16px' }}>
-                    <div>
-                        <h1 style={{ fontSize: '2.2rem', fontWeight: 800, marginBottom: '6px' }}>
-                            {activeView === 'news' ? 'Custom News Feed' : activeView === 'more_news' ? 'All Live Articles' : activeView === 'bookmarks' ? 'Your Bookmarks' : activeView === 'login' ? 'Sign In' : 'Create Account'}
-                        </h1>
-                        <p style={{ color: 'hsl(var(--muted))' }}>
-                            {activeView === 'news' || activeView === 'more_news'
-                                ? (user ? `Welcome, ${user.username}! Explore breaking stories or customize interests in settings.` : 'Explore breaking stories and the latest updates.') 
-                                : activeView === 'bookmarks' ? 'Persistently cached summaries saved on your profile.'
-                                : 'Join to access personalized features and saved news.'
-                            }
-                        </p>
-                    </div>
+                {activeView !== 'login' && activeView !== 'register' && (
+                    <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '32px', flexWrap: 'wrap', gap: '16px' }}>
+                        <div>
+                            <h1 style={{ fontSize: '2.2rem', fontWeight: 800, marginBottom: '6px' }}>
+                                {activeView === 'news' ? 'Custom News Feed' : activeView === 'more_news' ? 'All Live Articles' : activeView === 'bookmarks' ? 'Your Bookmarks' : ''}
+                            </h1>
+                            <p style={{ color: 'hsl(var(--muted))' }}>
+                                {activeView === 'news' || activeView === 'more_news'
+                                    ? (user ? `Welcome, ${user.username}! Explore breaking stories or customize interests in settings.` : 'Explore breaking stories and the latest updates.') 
+                                    : activeView === 'bookmarks' ? 'Persistently cached summaries saved on your profile.'
+                                    : ''
+                                }
+                            </p>
+                        </div>
 
-                    {/* Show Search bar only in the active discovery news feed */}
-                    {(activeView === 'news' || activeView === 'more_news') && <SearchBar onSearch={setSearchQuery} />}
-                </div>
+                        {/* Show Search bar only in the active discovery news feed */}
+                        {(activeView === 'news' || activeView === 'more_news') && <SearchBar onSearch={setSearchQuery} />}
+                    </div>
+                )}
 
                 {/* Sub-Filters Badge Grid */}
                 {(activeView === 'news' || activeView === 'more_news') && (
