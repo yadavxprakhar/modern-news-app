@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from '../store/authContext';
-import { Mail, Lock, ArrowRight, Loader2, Newspaper } from 'lucide-react';
+import { Mail, Lock, ArrowRight, Loader2 } from 'lucide-react';
 
 interface LoginPageProps {
     onSwitchToRegister: () => void;
