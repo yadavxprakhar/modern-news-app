@@ -14,6 +14,8 @@ const MainAppContent: React.FC = () => {
     const { user, loading: authLoading, logout, toggleTheme, preferences } = useAuth();
     const [activeView, setActiveView] = useState<'news' | 'bookmarks' | 'login' | 'register' | 'more_news'>('news');
     const [isPrefsOpen, setIsPrefsOpen] = useState<boolean>(false);
+    const [moreNewsPage, setMoreNewsPage] = useState<number>(0);
+    const [shuffledArticles, setShuffledArticles] = useState<any[]>([]);
 
     React.useEffect(() => {
         if (user && (activeView === 'login' || activeView === 'register')) {
@@ -39,6 +41,15 @@ const MainAppContent: React.FC = () => {
         isBookmarked, 
         getBookmarkedId 
     } = useBookmarks();
+
+    // Randomize articles whenever they are newly fetched from the API
+    React.useEffect(() => {
+        if (articles.length > 0) {
+            setShuffledArticles([...articles].sort(() => Math.random() - 0.5));
+        } else {
+            setShuffledArticles([]);
+        }
+    }, [articles]);
 
     // 2. Display spinner during initial user auth load
     if (authLoading) {
@@ -146,7 +157,14 @@ const MainAppContent: React.FC = () => {
 
                 {/* Sub-Filters Badge Grid */}
                 {(activeView === 'news' || activeView === 'more_news') && (
-                    <CategoryFilter currentCategory={category} onSelectCategory={setCategory} />
+                    <CategoryFilter 
+                        currentCategory={category} 
+                        onSelectCategory={(newCat: string) => {
+                            setCategory(newCat);
+                            setActiveView('news');
+                            setMoreNewsPage(0);
+                        }} 
+                    />
                 )}
 
                 {/* Active grid display */}
@@ -172,10 +190,10 @@ const MainAppContent: React.FC = () => {
                     </div>
                 ) : activeView === 'news' ? (
                     // Discover Feeds Grid
-                    articles.length > 0 ? (
+                    shuffledArticles.length > 0 ? (
                         <>
                             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '30px' }}>
-                                {articles.slice(0, 10).map((art) => (
+                                {shuffledArticles.slice(0, 12).map((art) => (
                                     <ArticleCard
                                         key={art.url}
                                         article={art}
@@ -184,7 +202,7 @@ const MainAppContent: React.FC = () => {
                                     />
                                 ))}
                             </div>
-                            {articles.length > 10 && (
+                            {shuffledArticles.length > 12 && (
                                 <div style={{ textAlign: 'center', marginTop: '40px' }}>
                                     <button className="btn btn-primary" style={{ padding: '12px 32px', fontSize: '1rem', borderRadius: '30px' }} onClick={() => setActiveView('more_news')}>
                                         See More Articles ↓
@@ -202,13 +220,30 @@ const MainAppContent: React.FC = () => {
                 ) : activeView === 'more_news' ? (
                     // All articles grid
                     <>
-                        <div style={{ marginBottom: '24px' }}>
-                            <button className="btn btn-secondary" style={{ padding: '8px 16px', fontSize: '0.9rem' }} onClick={() => setActiveView('news')}>
+                        <div style={{ marginBottom: '24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <button className="btn btn-secondary" style={{ padding: '8px 16px', fontSize: '0.9rem' }} onClick={() => {
+                                setActiveView('news');
+                                setMoreNewsPage(0);
+                            }}>
                                 ← Back to Top Headlines
                             </button>
+                            {shuffledArticles.length > 50 && (
+                                <button className="btn btn-primary" style={{ padding: '8px 16px', fontSize: '0.9rem' }} onClick={() => {
+                                    if (moreNewsPage === 0) {
+                                        setMoreNewsPage(1);
+                                    } else {
+                                        // Once they have seen all 100, reshuffle and start over at page 0
+                                        setShuffledArticles(prev => [...prev].sort(() => Math.random() - 0.5));
+                                        setMoreNewsPage(0);
+                                    }
+                                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                                }}>
+                                    🔄 Refresh Feed
+                                </button>
+                            )}
                         </div>
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '30px' }}>
-                            {articles.map((art) => (
+                            {shuffledArticles.slice(moreNewsPage * 50, (moreNewsPage + 1) * 50).map((art) => (
                                 <ArticleCard
                                     key={art.url}
                                     article={art}
@@ -217,6 +252,7 @@ const MainAppContent: React.FC = () => {
                                 />
                             ))}
                         </div>
+
                     </>
                 ) : (
                     // Bookmarks Saved Feed Grid
