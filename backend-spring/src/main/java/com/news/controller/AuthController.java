@@ -21,11 +21,25 @@ public class AuthController {
     }
 
     /**
-     * Endpoint for user account registration
+     * Step 1: Endpoint to initiate user registration and trigger OTP generation/email dispatch
      */
-    @PostMapping("/register")
-    public ResponseEntity<JwtAuthResponse> registerUser(@Valid @RequestBody SignUpRequest signUpRequest) {
-        JwtAuthResponse response = userService.registerUser(signUpRequest);
+    @PostMapping("/register/initiate")
+    public ResponseEntity<Map<String, Object>> initiateRegistration(@Valid @RequestBody com.news.dto.SignUpRequest signUpRequest) {
+        userService.initiateRegistration(signUpRequest);
+        return ResponseEntity.ok(Map.of(
+                "status", "success",
+                "otpRequired", true,
+                "email", signUpRequest.getEmail(),
+                "message", "Verification code successfully sent to email"
+        ));
+    }
+
+    /**
+     * Step 2: Endpoint to verify the OTP and officially finalize account creation
+     */
+    @PostMapping("/register/verify")
+    public ResponseEntity<JwtAuthResponse> verifyRegistrationOtp(@Valid @RequestBody com.news.dto.RegisterVerifyRequest verifyRequest) {
+        JwtAuthResponse response = userService.completeRegistration(verifyRequest);
         return ResponseEntity.ok(response);
     }
 

@@ -18,6 +18,7 @@ interface AuthContextType {
     loading: boolean;
     login: (usernameOrEmail: string, password: string) => Promise<void>;
     register: (username: string, email: string, password: string) => Promise<void>;
+    verifyOtp: (email: string, otp: string) => Promise<void>;
     logout: () => void;
     updatePreferences: (newPrefs: Partial<UserPreferences>) => Promise<void>;
     toggleTheme: () => Promise<void>;
@@ -106,20 +107,35 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     };
 
     /**
-     * Registers a new user account
+     * Initiates a new user account registration by triggering a secure OTP email dispatch
      */
     const register = async (username: string, email: string, password: string) => {
         setLoading(true);
         try {
-            const response = await api.post('/auth/register', { username, email, password });
-            const { accessToken, refreshToken, username: savedUser, email: savedEmail } = response.data;
+            await api.post('/auth/register/initiate', { username, email, password });
+        } catch (error) {
+            clearSession();
+            throw error;
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    /**
+     * Validates the registration OTP and activates the account, storing session tokens
+     */
+    const verifyOtp = async (email: string, otp: string) => {
+        setLoading(true);
+        try {
+            const response = await api.post('/auth/register/verify', { email, otp });
+            const { accessToken, refreshToken, username, email: savedEmail } = response.data;
 
             localStorage.setItem('accessToken', accessToken);
             localStorage.setItem('refreshToken', refreshToken);
-            localStorage.setItem('username', savedUser);
+            localStorage.setItem('username', username);
             localStorage.setItem('email', savedEmail);
 
-            setUser({ username: savedUser, email: savedEmail });
+            setUser({ username, email: savedEmail });
 
             // Fetch and apply preferences immediately
             const prefResponse = await api.get('/users/preferences');
@@ -169,7 +185,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     };
 
     return (
-        <AuthContext.Provider value={{ user, preferences, loading, login, register, logout, updatePreferences, toggleTheme }}>
+        <AuthContext.Provider value={{ user, preferences, loading, login, register, verifyOtp, logout, updatePreferences, toggleTheme }}>
             {children}
         </AuthContext.Provider>
     );
