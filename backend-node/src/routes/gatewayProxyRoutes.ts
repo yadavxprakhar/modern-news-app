@@ -41,8 +41,8 @@ const proxyToSpring = async (req: Request, res: Response) => {
 };
 
 // Route and match all Auth, Users, and Bookmarks routes to the Spring Boot proxy handler
-router.all('/auth/*', proxyToSpring);
-router.all('/users/*', proxyToSpring);
-router.all('/bookmarks/*', proxyToSpring);
+router.all(['/auth', '/auth/*'], proxyToSpring);
+router.all(['/users', '/users/*'], proxyToSpring);
+router.all(['/bookmarks', '/bookmarks/*'], proxyToSpring);
 
 export default router;

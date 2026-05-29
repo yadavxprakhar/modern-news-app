@@ -40,7 +40,14 @@ export const useBookmarks = () => {
         setError('');
         try {
             console.log('📌 Persisting bookmark to database:', article.title);
-            const response = await api.post('/bookmarks', article);
+            
+            // Sanitize article date for Spring Boot LocalDateTime parsing compatibility
+            const sanitizedArticle = { ...article };
+            if (sanitizedArticle.publishedAt && sanitizedArticle.publishedAt.endsWith('Z')) {
+                sanitizedArticle.publishedAt = sanitizedArticle.publishedAt.slice(0, -1);
+            }
+
+            const response = await api.post('/bookmarks', sanitizedArticle);
             const newBookmark: BookmarkData = response.data;
             setBookmarks((prev) => [...prev, newBookmark]);
         } catch (err: any) {
